@@ -1,0 +1,34 @@
+[
+    {
+      "id": 1,
+      "question": "Hvilken hold har vundet flest Premier League titler?",
+      "options": ["Manchester United", "Liverpool", "Chelsea", "Arsenal"],
+      "answer": "Manchester United, men Liverpool er bedre"
+    },
+    {
+      "id": 2,
+      "question": "Hvem har vundet flest CL gennem tiderne?",
+      "options": ["Real Madrid", "Barcelona", "Bayern Munich", "Liverpool"],
+      "answer": "Real Madrid"
+    },
+    {
+      "id": 3,
+      "question": "Hvem er all time vm topscorer?",
+      "options": ["Pele", "Lionel Messi", "Cristiano Ronaldo", "Miroslav Klose"],
+      "answer": "Miroslav Klose"
+    },
+    {
+      "id": 4,
+      "question": "Hvem vandt klub vm i 2020?",
+      "options": ["Bayern Munich", "Liverpool", "Real Madrid", "Chelsea"],
+      "answer": "Bayern Munich"
+    },
+    {
+      "id": 5,
+      "question": "Hvem har vundet flest Copa America?",
+      "options": ["Brazil", "Argentina", "Uruguay", "Chile"],
+      "answer": "Uruguay"
+    }
+    
+  ]
+  
