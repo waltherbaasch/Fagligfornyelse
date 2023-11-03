@@ -1,79 +1,69 @@
+import { useState, useEffect } from 'react';
 import TicTacToe from "../components/TicTacToe";
 import Quiz from "../components/Quiz";
 import Footer from "../components/Footer";
 
-const HomePage = ({ questions, footballResults }) => {
+const HomePage = ({ questions, footballResults, copenhagenTime }) => {
+  const [time, setTime] = useState(copenhagenTime);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchCopenhagenTime();
+    }, 1000); 
+
+    return () => clearInterval(interval); 
+  }, []);
+
+  const fetchCopenhagenTime = async () => {
+    try {
+      const res = await fetch("https://worldtimeapi.org/api/timezone/Europe/Copenhagen");
+      const data = await res.json();
+      setTime(data.datetime);
+    } catch (error) {
+      console.error("Error fetching time:", error);
+    }
+  };
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundImage: `url('/images/Parken.jpeg')`, 
-        backgroundSize: "cover", 
-        backgroundPosition: "center", 
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "20px",
-        }}
-      >
-        <div style={{ width: "45%" }}>
-          <TicTacToe/>
-        </div>
-        <div
-          style={{
-            width: "45%",
-            backgroundColor: "#f0f0f0",
-            padding: "20px",
-            borderRadius: "8px",
-            color: "blue"
-          }}
-        >
-          <Quiz questions={questions} />
-          <div style={{ marginTop: "20px" }}>
-            <h2 style={{ marginBottom: "10px" }}>
-              Champions League 2024 Semi-Finale Resultater:
-            </h2>
-            <img
-              src="/images/champions_league_logo.png"
-              alt="Champions League Logo"
-              style={{ width: '200px', height: 'auto', marginRight: '10px' }}
-            />
-            <ul style={{ listStyleType: "none", padding: 0 }}>
-              {footballResults.map((match) => (
-                <li
-                  key={match.id}
-                  style={{
-                    marginBottom: "10px",
-                    borderBottom: "1px solid #ccc",
-                    paddingBottom: "5px",
-                  }}
-                >
-                  <strong>{`${match.homeTeam} ${match.result} ${match.awayTeam}`}</strong>
-                  <span style={{ marginLeft: "10px", color: "#555" }}>
-                    Dato: {match.date}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+    <div className="grid grid-cols-2 gap-8 min-h-screen bg-cover bg-center" style={{ backgroundImage: `url('/images/Parken.jpeg')` }}>
+      <div className="flex flex-col">
+        <TicTacToe />
+        <div className="bg-gray-200 p-2 rounded mt-4 color-blue" style={{ textAlign: 'center' }}>
+          <p className="text-sm">Copenhagen Time:</p>
+          <p className="text-xs">{time}</p>
         </div>
       </div>
-      <div style={{ marginTop: "auto" }}>
+      <div className="bg-gray-200 p-4 rounded color-blue">
+        <Quiz questions={questions} />
+        <div className="mt-4">
+          <h2 className="mb-4">
+            Champions League 2024 Semi-Finale Resultater:
+          </h2>
+          <img
+            src="/images/champions_league_logo.png"
+            alt="Champions League Logo"
+            className="w-48 h-auto mr-4"
+          />
+          <ul className="list-none p-0">
+            {footballResults.map((match) => (
+              <li key={match.id} className="mb-4 border-b border-gray-300 pb-2">
+                <strong>{`${match.homeTeam} ${match.result} ${match.awayTeam}`}</strong>
+                <span className="ml-4 color-gray-600">
+                  Dato: {match.date}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="mt-auto col-span-2">
         <Footer />
       </div>
-      <div style={{ position: "absolute", bottom: 0, right: 0 }}>
+      <div className="absolute bottom-0 right-0">
         <img
           src="/images/fck.png"
           alt="FCK Logo"
-          style={{
-            width: '75px',
-            height: '75px',
-          }}
+          className="w-12 h-12"
         />
       </div>
     </div>
@@ -82,18 +72,22 @@ const HomePage = ({ questions, footballResults }) => {
 
 export async function getServerSideProps() {
   try {
-    const res = await fetch("http://localhost:3000/api/championsLeagueResults");
-    const footballResults = await res.json();
+    const res = await fetch("https://worldtimeapi.org/api/timezone/Europe/Copenhagen");
+    const data = await res.json();
+    const copenhagenTime = data.datetime;
+
+    const resFootball = await fetch("http://localhost:3000/api/championsLeagueResults");
+    const footballResults = await resFootball.json();
 
     const questions = [];
 
     return {
-      props: { questions, footballResults },
+      props: { questions, footballResults, copenhagenTime },
     };
   } catch (error) {
     console.error("Error fetching data:", error);
     return {
-      props: { questions: [], footballResults: [] },
+      props: { questions: [], footballResults: [], copenhagenTime: "" },
     };
   }
 }
